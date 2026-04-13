@@ -347,19 +347,29 @@ namespace CPlayer.WinForms.UI
             _muteBtn.Symbol = _muted ? "🔇" : "🔊";
         }
 
+        private FormWindowState _preFullState;
+        private FormBorderStyle _preFullStyle;
+        private bool _isFull = false;
+
         private void ToggleFullscreen()
         {
-            var form = FindForm();
+            var form = this.FindForm();
             if (form == null) return;
-            if (form.FormBorderStyle == FormBorderStyle.None)
+
+            if (!_isFull)
             {
-                form.FormBorderStyle = FormBorderStyle.Sizable;
-                form.WindowState = FormWindowState.Normal;
+                _preFullState = form.WindowState;
+                _preFullStyle = form.FormBorderStyle;
+
+                form.FormBorderStyle = FormBorderStyle.None;
+                form.WindowState = FormWindowState.Maximized;
+                _isFull = true;
             }
             else
             {
-                form.FormBorderStyle = FormBorderStyle.None;
-                form.WindowState = FormWindowState.Maximized;
+                form.FormBorderStyle = _preFullStyle;
+                form.WindowState = _preFullState;
+                _isFull = false;
             }
         }
 
@@ -398,6 +408,11 @@ namespace CPlayer.WinForms.UI
             if (keyData == Keys.Down)
             {
                 if (_volumeSlider != null) _volumeSlider.Value -= 0.05f;
+                return true;
+            }
+            if (keyData == Keys.F11 || keyData == (Keys.Alt | Keys.Enter))
+            {
+                ToggleFullscreen();
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
