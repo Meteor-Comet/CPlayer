@@ -20,7 +20,7 @@ namespace CPlayer.WinForms.Core
             // 优先级 2: NuGet 标准 Native 路径 (win-x64)
             var pathNuGet = Path.Combine(basePath, "runtimes", "win-x64", "native");
 
-            if (Directory.EnumerateFiles(pathLocal, "avcodec*.dll").Any())
+            if (Directory.Exists(pathLocal) && Directory.EnumerateFiles(pathLocal, "avcodec*.dll").Any())
             {
                 ffmpeg.RootPath = pathLocal;
             }
@@ -30,7 +30,7 @@ namespace CPlayer.WinForms.Core
             }
             else
             {
-                // 保底方案：假设在根目录或已被其他方式加载
+                // 优先级 3: 直接在根目录查找
                 ffmpeg.RootPath = basePath;
             }
 
