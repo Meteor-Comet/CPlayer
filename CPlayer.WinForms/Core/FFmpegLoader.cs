@@ -1,16 +1,40 @@
 using System;
 using System.IO;
+using System.Linq;
 using FFmpeg.AutoGen;
 
 namespace CPlayer.WinForms.Core
 {
     public static class FFmpegLoader
     {
-        public static void RegisterBinaries(string path = @"libs\ffmpeg")
+        private static bool _registered = false;
+
+        public static void RegisterBinaries()
         {
+            if (_registered) return;
+
             var basePath = AppDomain.CurrentDomain.BaseDirectory;
-            var fullPath = Path.Combine(basePath, path);
-            ffmpeg.RootPath = fullPath;
+            
+            // 优先级 1: 本地开发/手动拷贝路径
+            var pathLocal = Path.Combine(basePath, "libs", "ffmpeg");
+            // 优先级 2: NuGet 标准 Native 路径 (win-x64)
+            var pathNuGet = Path.Combine(basePath, "runtimes", "win-x64", "native");
+
+            if (Directory.EnumerateFiles(pathLocal, "avcodec*.dll").Any())
+            {
+                ffmpeg.RootPath = pathLocal;
+            }
+            else if (Directory.Exists(pathNuGet) && Directory.EnumerateFiles(pathNuGet, "avcodec*.dll").Any())
+            {
+                ffmpeg.RootPath = pathNuGet;
+            }
+            else
+            {
+                // 保底方案：假设在根目录或已被其他方式加载
+                ffmpeg.RootPath = basePath;
+            }
+
+            _registered = true;
         }
     }
 }
