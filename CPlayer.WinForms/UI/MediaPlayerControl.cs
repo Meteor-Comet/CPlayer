@@ -257,7 +257,7 @@ namespace CPlayer.WinForms.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load media: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Failed to load media: {ex}", "Debug Error Info", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Stop();
             }
         }
