@@ -245,6 +245,13 @@ namespace CPlayer.WinForms.UI
                 {
                     _audio?.Feed(audioChunk.PcmBytes);
                 }
+
+                // 检测播放结束，重置按鈕状态
+                if (_decoder.IsEof && _playing)
+                {
+                    _playing = false;
+                    _playBtn.Symbol = "▶";
+                }
             }
         }
 
@@ -333,6 +340,17 @@ namespace CPlayer.WinForms.UI
         private void TogglePlay()
         {
             if (_decoder == null) return;
+
+            // 如果已播放结束，点击播放则从头重播
+            if (_decoder.IsEof)
+            {
+                _decoder.Seek(0);
+                _audio?.ClearBuffer();
+                _playing = true;
+                _playBtn.Symbol = "⏸";
+                return;
+            }
+
             _playing = !_playing;
             _playBtn.Symbol = _playing ? "⏸" : "▶";
         }

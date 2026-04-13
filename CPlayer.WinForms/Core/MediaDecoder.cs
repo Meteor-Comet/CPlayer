@@ -30,6 +30,9 @@ namespace CPlayer.WinForms.Core
             set => Interlocked.Exchange(ref _pendingSpeed, value);
         }
 
+        private volatile bool _isEof = false;
+        public bool IsEof => _isEof;
+
         public Channel<VideoFrame> VideoChannel { get; } =
             Channel.CreateBounded<VideoFrame>(new BoundedChannelOptions(8)
             {
@@ -154,7 +157,8 @@ namespace CPlayer.WinForms.Core
                     
                     sw.Restart();
                     clockOffset = targetSeek;
-                    isEof = false; // 重置 EOF 状态
+                    isEof = false;
+                    _isEof = false; // 同步公开属性，让 UI 知道已恢复
                 }
 
                 if (isEof)
@@ -166,7 +170,8 @@ namespace CPlayer.WinForms.Core
                 int readRet = ffmpeg.av_read_frame(_fmtCtx, pkt);
                 if (readRet < 0)
                 {
-                    isEof = true; // 标记已读完，但不退出线程
+                    isEof = true;
+                    _isEof = true; // 通知 UI：视频已播放结束
                     continue;
                 }
 
