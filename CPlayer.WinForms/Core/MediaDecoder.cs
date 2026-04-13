@@ -138,6 +138,7 @@ namespace CPlayer.WinForms.Core
             var sw = System.Diagnostics.Stopwatch.StartNew();
             double clockOffset = 0;
 
+            bool isEof = false;
             while (!_cts.Token.IsCancellationRequested)
             {
                 double targetSeek = Interlocked.Exchange(ref _pendingSeekTarget, -1);
@@ -153,9 +154,21 @@ namespace CPlayer.WinForms.Core
                     
                     sw.Restart();
                     clockOffset = targetSeek;
+                    isEof = false; // 重置 EOF 状态
                 }
 
-                if (ffmpeg.av_read_frame(_fmtCtx, pkt) < 0) break; // EOF
+                if (isEof)
+                {
+                    Thread.Sleep(100);
+                    continue;
+                }
+
+                int readRet = ffmpeg.av_read_frame(_fmtCtx, pkt);
+                if (readRet < 0)
+                {
+                    isEof = true; // 标记已读完，但不退出线程
+                    continue;
+                }
 
                 if (pkt->stream_index == _vStreamIdx && _vCodecCtx != null)
                 {

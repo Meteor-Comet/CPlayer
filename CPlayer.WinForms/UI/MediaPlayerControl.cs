@@ -239,11 +239,6 @@ namespace CPlayer.WinForms.UI
 
         public void LoadAndPlay(string filePath)
         {
-            if (IntPtr.Size != 8)
-            {
-                MessageBox.Show("错误：FFmpeg 7.1 是 64 位的，但当前程序运行在 32 位模式。请在项目属性->生成中取消勾选'首选32位'，或将目标平台设为 x64。", "环境不匹配");
-                return;
-            }
             Stop();
             try
             {
@@ -255,6 +250,7 @@ namespace CPlayer.WinForms.UI
                 _audio.Init(_decoder.AudioSampleRate, _decoder.AudioChannels);
                 _audio.SetVolume(_muted ? 0f : _volumeSlider.Value);
                 
+                _decoder.PlaybackSpeed = _currentSpeed;
                 _decoder.Start();
                 _uiTimer.Start();
                 _playing = true;
@@ -265,6 +261,55 @@ namespace CPlayer.WinForms.UI
                 MessageBox.Show($"Failed to load media: {ex}", "Debug Error Info", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Stop();
             }
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustLayout();
+        }
+
+        private void AdjustLayout()
+        {
+            if (_controlBar == null) return;
+
+            // 根据高度动态调整控制栏高度 (最小 48, 最大 80)
+            int barHeight = Math.Max(48, Math.Min(80, Height / 10));
+            _controlBar.Height = barHeight;
+            _controlBar.Location = new Point(0, Height - barHeight);
+
+            // 比例系数
+            float scale = barHeight / 60f;
+            int btnSize = (int)(32 * scale);
+            int margin = (int)(12 * scale);
+
+            _playBtn.Size = new Size(btnSize, btnSize);
+            _playBtn.Location = new Point(margin, (barHeight - btnSize) / 2);
+
+            _timeLabel.Font = new Font(_timeLabel.Font.FontFamily, 9f * scale);
+            _timeLabel.Location = new Point(_playBtn.Right + margin, (barHeight - _timeLabel.Height) / 2);
+
+            // 右侧按钮靠右排列
+            int rightX = Width - margin;
+
+            _fullBtn.Size = new Size(btnSize, btnSize);
+            rightX -= btnSize;
+            _fullBtn.Location = new Point(rightX, (barHeight - btnSize) / 2);
+
+            rightX -= margin;
+            _volumeSlider.Width = (int)(100 * scale);
+            rightX -= _volumeSlider.Width;
+            _volumeSlider.Location = new Point(rightX, (barHeight - _volumeSlider.Height) / 2);
+
+            rightX -= (margin / 2);
+            _muteBtn.Size = new Size(btnSize, btnSize);
+            rightX -= btnSize;
+            _muteBtn.Location = new Point(rightX, (barHeight - btnSize) / 2);
+
+            rightX -= margin * 2;
+            _speedLabelText.Font = new Font(_speedLabelText.Font.FontFamily, 10.5f * scale, FontStyle.Bold);
+            rightX -= _speedLabelText.Width;
+            _speedLabelText.Location = new Point(rightX, (barHeight - _speedLabelText.Height) / 2);
         }
 
         private void TogglePlay()

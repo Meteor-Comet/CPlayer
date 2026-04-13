@@ -16,7 +16,7 @@
     <RepositoryUrl>https://github.com/Meteor-Comet/CPlayer</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>1.0.7</Version>
+    <Version>1.0.8</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,30 +29,15 @@
 
   <!-- FFmpeg native DLLs: copied to output and bundled into NuGet package -->
   <ItemGroup>
-    <None Include="libs\ffmpeg\avcodec-61.dll">
+    <None Include="libs\ffmpeg\*.dll">
       <Pack>true</Pack>
       <PackagePath>runtimes\win-x64\native</PackagePath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="libs\ffmpeg\avformat-61.dll">
-      <Pack>true</Pack>
-      <PackagePath>runtimes\win-x64\native</PackagePath>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="libs\ffmpeg\avutil-59.dll">
-      <Pack>true</Pack>
-      <PackagePath>runtimes\win-x64\native</PackagePath>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="libs\ffmpeg\swresample-5.dll">
-      <Pack>true</Pack>
-      <PackagePath>runtimes\win-x64\native</PackagePath>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="libs\ffmpeg\swscale-8.dll">
-      <Pack>true</Pack>
-      <PackagePath>runtimes\win-x64\native</PackagePath>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="libs\ffmpeg_x86\*.dll">
+       <Pack>true</Pack>
+       <PackagePath>runtimes\win-x86\native</PackagePath>
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="libs\ffmpeg\readme.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

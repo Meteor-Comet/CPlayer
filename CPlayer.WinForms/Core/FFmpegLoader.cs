@@ -18,11 +18,12 @@ namespace CPlayer.WinForms.Core
             if (_registered) return;
 
             var basePath = AppDomain.CurrentDomain.BaseDirectory;
+            bool is64 = IntPtr.Size == 8;
+            string arch = is64 ? "win-x64" : "win-x86";
             
-            // 优先级 1: 本地开发/手动拷贝路径
-            var pathLocal = Path.Combine(basePath, "libs", "ffmpeg");
-            // 优先级 2: NuGet 标准 Native 路径 (win-x64)
-            var pathNuGet = Path.Combine(basePath, "runtimes", "win-x64", "native");
+            // 按照架构区分搜索路径
+            var pathLocal = Path.Combine(basePath, "libs", is64 ? "ffmpeg" : "ffmpeg_x86");
+            var pathNuGet = Path.Combine(basePath, "runtimes", arch, "native");
 
             string finalPath = "";
             if (Directory.Exists(pathLocal) && Directory.GetFiles(pathLocal, "avcodec*.dll").Any())
