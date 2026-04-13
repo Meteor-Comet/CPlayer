@@ -239,6 +239,11 @@ namespace CPlayer.WinForms.UI
 
         public void LoadAndPlay(string filePath)
         {
+            if (IntPtr.Size != 8)
+            {
+                MessageBox.Show("错误：FFmpeg 7.1 是 64 位的，但当前程序运行在 32 位模式。请在项目属性->生成中取消勾选'首选32位'，或将目标平台设为 x64。", "环境不匹配");
+                return;
+            }
             Stop();
             try
             {
