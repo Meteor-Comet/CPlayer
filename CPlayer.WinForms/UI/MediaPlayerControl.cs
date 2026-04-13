@@ -34,9 +34,20 @@ namespace CPlayer.WinForms.UI
             SetStyle(ControlStyles.OptimizedDoubleBuffer |
                      ControlStyles.AllPaintingInWmPaint |
                      ControlStyles.UserPaint, true);
+            // 使控件本身可以接收键盘焦点
+            this.TabStop = true;
+            this.TabIndex = 0;
 
             BuildUI();
             BuildTimer();
+        }
+
+        protected override void OnCreateControl()
+        {
+            base.OnCreateControl();
+            // 让父窗体开启 KeyPreview，确保键盘事件能被本控件的 ProcessCmdKey 捕获
+            var form = this.FindForm();
+            if (form != null) form.KeyPreview = true;
         }
 
         private void BuildUI()
@@ -260,6 +271,8 @@ namespace CPlayer.WinForms.UI
                 _uiTimer.Start();
                 _playing = true;
                 _playBtn.Symbol = "⏸";
+                // 播放开始后立即夺回焦点，确保空格/方向键等快捷键生效
+                this.Focus();
             }
             catch (Exception ex)
             {
@@ -294,8 +307,8 @@ namespace CPlayer.WinForms.UI
             _timeLabel.Font = new Font(_timeLabel.Font.FontFamily, 9f * scale);
             _timeLabel.Location = new Point(_playBtn.Right + margin, (barHeight - _timeLabel.Height) / 2);
 
-            // 右侧按钮靠右排列
-            int rightX = Width - margin;
+            // 右侧按钮靠右排列：使用控制栏宽度而非控件宽度，并留出边距
+            int rightX = _controlBar.Width - margin;
 
             _fullBtn.Size = new Size(btnSize, btnSize);
             rightX -= btnSize;
@@ -361,16 +374,24 @@ namespace CPlayer.WinForms.UI
                 _preFullState = form.WindowState;
                 _preFullStyle = form.FormBorderStyle;
 
+                form.SuspendLayout();
                 form.FormBorderStyle = FormBorderStyle.None;
                 form.WindowState = FormWindowState.Maximized;
+                // 确保播放器控件撑满整个窗体
+                this.Dock = DockStyle.Fill;
+                form.ResumeLayout(true);
                 _isFull = true;
             }
             else
             {
+                form.SuspendLayout();
                 form.FormBorderStyle = _preFullStyle;
                 form.WindowState = _preFullState;
+                form.ResumeLayout(true);
                 _isFull = false;
             }
+            // 全屏切换后重新夺回焦点
+            this.Focus();
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
