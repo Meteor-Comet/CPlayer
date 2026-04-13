@@ -38,18 +38,8 @@ namespace CPlayer.WinForms.Core
                 finalPath = basePath;
             }
 
-            // 【Debug 诊断】: 关键！请告诉我运行后弹窗里显示的路径是什么
-            System.Windows.Forms.MessageBox.Show($"FFmpeg Path Selected: {finalPath}", "Debug Path Info");
-
             SetDllDirectory(finalPath);
             ffmpeg.RootPath = finalPath;
-
-            // 尝试手动预加载最核心的 avutil，如果这步失败，说明架构(x64/x86)不匹配或文件损坏
-            IntPtr hUtil = LoadLibrary(Path.Combine(finalPath, "avutil-59.dll"));
-            if (hUtil == IntPtr.Zero)
-            {
-                 System.Windows.Forms.MessageBox.Show($"CRITICAL: Failed to Load avutil-59.dll from {finalPath}. Error Code: {Marshal.GetLastWin32Error()}", "DLL Load Error");
-            }
 
             _registered = true;
         }

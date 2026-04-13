@@ -16,7 +16,7 @@
     <RepositoryUrl>https://github.com/Meteor-Comet/CPlayer</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>1.0.5</Version>
+    <Version>1.0.6</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -56,6 +56,10 @@
     </None>
     <None Include="libs\ffmpeg\readme.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="build\CPlayer.WinForms.targets">
+      <Pack>true</Pack>
+      <PackagePath>build</PackagePath>
     </None>
     <None Include="..\README.md" Pack="true" PackagePath=""/>
   </ItemGroup>
