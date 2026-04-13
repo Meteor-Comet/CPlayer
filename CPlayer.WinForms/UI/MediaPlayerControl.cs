@@ -410,9 +410,14 @@ namespace CPlayer.WinForms.UI
                 if (_volumeSlider != null) _volumeSlider.Value -= 0.05f;
                 return true;
             }
-            if (keyData == Keys.F11 || keyData == (Keys.Alt | Keys.Enter))
+            if (keyData == Keys.F11 || keyData == (Keys.Alt | Keys.Enter) || keyData == Keys.F)
             {
                 ToggleFullscreen();
+                return true;
+            }
+            if (keyData == Keys.Escape)
+            {
+                if (_isFull) ToggleFullscreen();
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
