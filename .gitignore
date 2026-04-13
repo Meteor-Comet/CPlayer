@@ -1,0 +1,27 @@
+## .NET Build Output
+bin/
+obj/
+*.nupkg
+*.snupkg
+
+## Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+## Rider
+.idea/
+
+## NuGet
+packages/
+*.lock.json
+
+## OS
+Thumbs.db
+.DS_Store
