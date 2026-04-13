@@ -6,9 +6,16 @@
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Title>CPlayer WinForms Component</Title>
-    <Authors>YourName</Authors>
-    <Description>A high-performance WinForms video player control built on FFmpeg and NAudio.</Description>
+    <PackageId>CPlayer.WinForms</PackageId>
+    <Title>CPlayer WinForms Media Player</Title>
+    <Authors>Meteor-Comet</Authors>
+    <Owners>Meteor-Comet</Owners>
+    <Description>A high-performance, self-contained WinForms media player control built on FFmpeg 7.x and NAudio. Supports variable playback speed (0.5x-2.0x), bilibili-style modern UI, keyboard shortcuts, and NuGet-ready packaging. Bundled FFmpeg 7.x DLLs (x64) are included and automatically copied to the output directory.</Description>
+    <PackageTags>winforms;mediaplayer;ffmpeg;video;audio;player;control</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Meteor-Comet/CPlayer</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Version>1.0.0</Version>
   </PropertyGroup>
 
@@ -20,9 +27,37 @@
     <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
   </ItemGroup>
 
+  <!-- FFmpeg native DLLs: copied to output and bundled into NuGet package -->
   <ItemGroup>
-    <None Update="libs\ffmpeg\readme.txt">
+    <None Include="libs\ffmpeg\avcodec-61.dll">
+      <Pack>true</Pack>
+      <PackagePath>runtimes\win-x64\native</PackagePath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="libs\ffmpeg\avformat-61.dll">
+      <Pack>true</Pack>
+      <PackagePath>runtimes\win-x64\native</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="libs\ffmpeg\avutil-59.dll">
+      <Pack>true</Pack>
+      <PackagePath>runtimes\win-x64\native</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="libs\ffmpeg\swresample-5.dll">
+      <Pack>true</Pack>
+      <PackagePath>runtimes\win-x64\native</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="libs\ffmpeg\swscale-8.dll">
+      <Pack>true</Pack>
+      <PackagePath>runtimes\win-x64\native</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="libs\ffmpeg\readme.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\README.md" Pack="true" PackagePath=""/>
   </ItemGroup>
+
 </Project>

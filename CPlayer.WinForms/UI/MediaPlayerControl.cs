@@ -21,7 +21,7 @@ namespace CPlayer.WinForms.UI
         private Timer _uiTimer;
         private DateTime _lastSeekTime = DateTime.MinValue;
         private double _currentSpeed = 1.0;
-        private double _frameAccumulator = 0.0;
+
 
         private MediaDecoder _decoder;
         private AudioRenderer _audio;
