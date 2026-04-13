@@ -380,6 +380,10 @@ namespace CPlayer.WinForms.UI
 
         private FormWindowState _preFullState;
         private FormBorderStyle _preFullStyle;
+        private Control _preFullParent;
+        private DockStyle _preFullDock;
+        private Rectangle _preFullBounds;
+        private int _preFullIndex;
         private bool _isFull = false;
 
         private void ToggleFullscreen()
@@ -389,26 +393,43 @@ namespace CPlayer.WinForms.UI
 
             if (!_isFull)
             {
-                _preFullState = form.WindowState;
-                _preFullStyle = form.FormBorderStyle;
+                // 记录当前状态
+                _preFullParent = this.Parent;
+                _preFullDock   = this.Dock;
+                _preFullBounds = this.Bounds;
+                _preFullIndex  = _preFullParent?.Controls.GetChildIndex(this) ?? 0;
+                _preFullState  = form.WindowState;
+                _preFullStyle  = form.FormBorderStyle;
 
-                form.SuspendLayout();
+                // 从原容器摘出，直接挂到 Form 上
+                _preFullParent?.Controls.Remove(this);
+                form.Controls.Add(this);
+                this.Dock = DockStyle.Fill;
+                this.BringToFront();
+
                 form.FormBorderStyle = FormBorderStyle.None;
                 form.WindowState = FormWindowState.Maximized;
-                // 确保播放器控件撑满整个窗体
-                this.Dock = DockStyle.Fill;
-                form.ResumeLayout(true);
                 _isFull = true;
             }
             else
             {
-                form.SuspendLayout();
+                // 从 Form 上摘回原容器
+                form.Controls.Remove(this);
+                this.Dock = _preFullDock;
+                this.Bounds = _preFullBounds;
+
+                if (_preFullParent != null)
+                {
+                    _preFullParent.Controls.Add(this);
+                    _preFullParent.Controls.SetChildIndex(this, _preFullIndex);
+                }
+
                 form.FormBorderStyle = _preFullStyle;
                 form.WindowState = _preFullState;
-                form.ResumeLayout(true);
                 _isFull = false;
             }
-            // 全屏切换后重新夺回焦点
+
+            this.BringToFront();
             this.Focus();
         }
 
